@@ -1,9 +1,17 @@
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
+import { stripe } from '../services/stripe';
 import { SubscribleButton } from '../components/SubscribleButton';
 import styles from './home.module.scss';
 
-export default function Home(props){
+type HomeProps = {
+    product:{
+        priceId:string;
+        amount:number
+    }
+};
+
+export default function Home({product}:HomeProps){
 
     return(
         <>
@@ -17,7 +25,7 @@ export default function Home(props){
                     <h1>News about<br/>the <span>React</span> world.</h1>
                     <p>
                         Get access to all the publications <br/>
-                        <span>for $9.90 month</span> 
+                        <span>for {product.amount} month</span> 
                     </p>
 
                     <SubscribleButton/>
@@ -30,10 +38,21 @@ export default function Home(props){
 
 export const getServerSideProps:GetServerSideProps = async () =>{
 
+    const price = await stripe.prices.retrieve('price_1Jd7YSCgz6De2oriuFvAWuFx',{
+        expand:['product']
+    });
+
+    const product = {
+        priceId: price.id,
+        amount: new Intl.NumberFormat('en-US',{
+            style:'currency',
+            currency:'USD'
+        }).format(price.unit_amount / 100)
+    };
+
     return {
         props:{
-            name: 'Thyago',
-            age: 27
+            product
         }
     }
 }
