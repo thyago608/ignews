@@ -28,6 +28,28 @@
             &:hover{
                 color: var(--white);
             }
+
+            & + a{
+                margin-left: 2rem;
+            }
+
+            &.active{
+                color: var(--white);
+                font-weight: bold;
+            }
+
+            &.active::after{
+                content: "";
+                width:100%;
+                height: 3px;
+                border-radius: 3px 3px 0 0;
+
+                position: absolute;
+                bottom: 1px;
+                left:0;
+
+                background: var(--yellow-500);
+            }
         }
     }
 }
