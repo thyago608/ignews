@@ -31,22 +31,39 @@ export default async(request: NextApiRequest, response:NextApiResponse) => {
     if(request.method === 'POST'){
         try{
             const buf = await buffer(request);
+            //Quando o Stripe acessa essa rota via webhook, o mesmo envia uma chave 
+            //no header da requisição ( a mesma se encontra dentro de STRIPE-SIGNATURE)
+        
             const secret = request.headers['stripe-signature'];
 
             let event:Stripe.Event;
 
             try{
+                //Tentando criar um evento
                 event = stripe.webhooks.constructEvent(buf, secret, process.env.STRIPE_WEBHOOK_SECRET);
 
             }catch(error){
                 response.status(400).send(`Webhook error: ${error.message}`);
             }
 
-
+            //Tipo de evento
             const type = event.type;
 
             if(relevantEvents.has(type)){
-                
+                try{
+                    switch(type){
+                        case 'checkout.session.completed':
+                            const checkoutSession = event.data.object as Stripe.Checkout.Session 
+
+                        
+                        break;
+
+                        default:
+                            throw new Error('Unhandled event.');
+                    }
+                }catch(err){
+                    return response.json({error:'Webhook handler failed'})
+                }
             }
 
         }catch(error){
