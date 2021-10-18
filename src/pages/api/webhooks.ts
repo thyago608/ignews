@@ -1,5 +1,7 @@
+import Stripe from 'stripe';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Readable } from 'stream';
+import { stripe } from '../../services/stripe';
 
 async function buffer(readable:Readable){
     const chunks = [];
@@ -13,6 +15,7 @@ async function buffer(readable:Readable){
     return Buffer.concat(chunks);
 }
 
+//Faz o Next não converter as informações que chegarão na requisição para o formato JSON.
 export const config = {
     api:{
         bodyParser: false
@@ -27,6 +30,24 @@ const relevantEvents = new Set([
 export default async(request: NextApiRequest, response:NextApiResponse) => {
     if(request.method === 'POST'){
         try{
+            const buf = await buffer(request);
+            const secret = request.headers['stripe-signature'];
+
+            let event:Stripe.Event;
+
+            try{
+                event = stripe.webhooks.constructEvent(buf, secret, process.env.STRIPE_WEBHOOK_SECRET);
+
+            }catch(error){
+                response.status(400).send(`Webhook error: ${error.message}`);
+            }
+
+
+            const type = event.type;
+
+            if(relevantEvents.has(type)){
+                
+            }
 
         }catch(error){
             return response.status(400).send(`Webhook error ${error.message}`);
