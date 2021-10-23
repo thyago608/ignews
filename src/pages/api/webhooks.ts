@@ -63,9 +63,7 @@ export default async(request: NextApiRequest, response:NextApiResponse) => {
 
                             await saveSubscription(
                                 subscription.id,
-                                subscription.customer.toString(),
-                                false
-                            );
+                                subscription.customer.toString());
                         break;
 
                         case 'checkout.session.completed':
@@ -73,9 +71,7 @@ export default async(request: NextApiRequest, response:NextApiResponse) => {
                             
                             await saveSubscription(
                                 checkoutSession.subscription.toString(),
-                                checkoutSession.customer.toString(),
-                                true
-                            );
+                                checkoutSession.customer.toString());
                         break;
 
                         default:
