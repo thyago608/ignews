@@ -1,45 +1,41 @@
-import { useSession, signIn } from 'next-auth/client';
-import { api } from '../../services/api';
-import { getStripeJs } from '../../services/stripe-js';
-import styles from './styles.module.scss';
+import { signIn, useSession } from "next-auth/client";
+import { api } from "../../services/api";
+import { getStripeJs } from "../../services/stripe-js";
+import styles from "./styles.module.scss";
 
 type SubscribleButtonProps = {
-    priceId: string;
+  priceId: string;
 };
 
-export function SubscribleButton({ priceId }:SubscribleButtonProps){
+export function SubscribleButton({ priceId }: SubscribleButtonProps) {
+  const [session] = useSession();
 
-    const [session] = useSession();
-
-    async function handleSubscrible(){
-        //Se o usuário não estiver autenticado
-        if(!session){
-            signIn('github');
-            return;
-        }
-
-        //Cria a sessão de checkout
-   
-        try{
-            const response = await api.post('/subscrible');
-
-            const { sessionId } = response.data;
-
-            const stripe = await getStripeJs();
-
-            await stripe.redirectToCheckout({ sessionId });
-
-        }catch(error){
-            alert(error);
-        }
+  async function handleSubscribe() {
+    if (!session) {
+      signIn("github");
+      return;
     }
-    return(
-        <button 
-            type="button" 
-            className={styles.subscribleButton}
-            onClick={handleSubscrible}
-        >
-            Subscrible now
-        </button>
-    );
+
+    try {
+      const response = await api.post("/subscribe");
+
+      const { sessionId } = response.data;
+
+      const stripe = await getStripeJs();
+
+      await stripe.redirectToCheckout({ sessionId });
+    } catch (error) {
+      alert(error.message);
+    }
+  }
+
+  return (
+    <button
+      type="button"
+      className={styles.subscribleButton}
+      onClick={handleSubscribe}
+    >
+      Subscrible now
+    </button>
+  );
 }

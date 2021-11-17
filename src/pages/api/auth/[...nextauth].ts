@@ -5,19 +5,18 @@ import { query as q } from "faunadb";
 import { fauna } from "../../../services/fauna";
 
 export default NextAuth({
-  //Configuração dos providers da aplicação
   providers: [
     Providers.GitHub({
       clientId: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      scope: "read:user", //concede acesso as informações básicas do perfil do usuário
+      scope: "read:user",
     }),
   ],
   callbacks: {
     async signIn(user, account, profile) {
-      try {
-        const { email } = user;
+      const { email } = user;
 
+      try {
         await fauna.query(
           q.If(
             q.Not(
@@ -29,7 +28,8 @@ export default NextAuth({
         );
 
         return true;
-      } catch {
+      } catch (e) {
+        console.log(e);
         return false;
       }
     },
