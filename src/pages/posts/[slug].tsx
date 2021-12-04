@@ -42,7 +42,16 @@ export const getServerSideProps: GetServerSideProps = async ({
   //Pegando informações se o usuário está autenticado
   const session = await getSession({ req });
 
-  //Pegando o parâmetro que da rota
+  if (!session || !session.activeSubscription) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  //Pegando o parâmetro da rota
   const { slug } = params;
 
   const prismic = getPrismicClient(req);
