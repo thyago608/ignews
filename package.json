@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test": "jest --watch"
   },
   "dependencies": {
     "@prismicio/client": "^5.1.0",
@@ -24,7 +25,7 @@
   },
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",
-    "@testing-library/react": "^13.4.0",
+    "@testing-library/react": "^12.1.5",
     "@types/next-auth": "^3.15.0",
     "@types/node": "^16.9.6",
     "@types/prismic-dom": "^2.1.1",
