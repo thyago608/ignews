@@ -4,11 +4,7 @@ import { api } from "../../services/api";
 import { getStripeJs } from "../../services/stripe-js";
 import styles from "./styles.module.scss";
 
-type SubscribleButtonProps = {
-  priceId: string;
-};
-
-export function SubscribleButton({ priceId }: SubscribleButtonProps) {
+export function SubscribeButton() {
   const [session] = useSession();
   const router = useRouter();
 
@@ -30,8 +26,8 @@ export function SubscribleButton({ priceId }: SubscribleButtonProps) {
 
       const stripe = await getStripeJs();
 
-      await stripe.redirectToCheckout({ sessionId });
-    } catch (error) {
+      await stripe?.redirectToCheckout({ sessionId });
+    } catch (error: any) {
       alert(error.message);
     }
   }
@@ -42,7 +38,7 @@ export function SubscribleButton({ priceId }: SubscribleButtonProps) {
       className={styles.subscribleButton}
       onClick={handleSubscribe}
     >
-      Subscrible now
+      Subscribe now
     </button>
   );
 }
