@@ -1,7 +1,10 @@
 .container {
   max-width: 1120px;
+  width: 100%;
   margin: 0 auto;
   padding: 0 2rem;
+
+  height: max-content;
 }
 
 .post {
@@ -17,6 +20,10 @@
     font-size: 1rem;
     color: var(--gray-300);
     margin-top: 1.5rem;
+  }
+
+  > button {
+    margin: 0 auto 2rem;
   }
 }
 
@@ -37,5 +44,17 @@
     li {
       margin: 0.5rem 0;
     }
+  }
+
+  &.notRegistered {
+    background-image: linear-gradient(to bottom, #e1e1e6, #121214);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    height: 60vh;
+
+    overflow: hidden;
+    margin-bottom: 5rem;
   }
 }

@@ -1,9 +1,10 @@
 import Head from "next/head";
 import { GetServerSideProps } from "next";
-import { getSession } from "next-auth/client";
+import { getSession, useSession } from "next-auth/client";
 import { getPrismicClient } from "../../services/prismic";
 import { RichText } from "prismic-dom";
 import styles from "./post.module.scss";
+import { SubscribeButton } from "../../components/SubscribeButton";
 
 type PostProps = {
   post: {
@@ -15,6 +16,8 @@ type PostProps = {
 };
 
 export default function Post({ post }: PostProps) {
+  const [session] = useSession();
+
   return (
     <>
       <Head>
@@ -26,9 +29,13 @@ export default function Post({ post }: PostProps) {
           <h1>{post.title}</h1>
           <time>{post.updatedAt}</time>
           <div
-            className={styles.postContent}
+            className={`${styles.postContent} ${
+              !session ? styles.notRegistered : ""
+            }`}
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
+
+          {!session?.activeSubscription && <SubscribeButton />}
         </article>
       </main>
     </>
@@ -41,15 +48,6 @@ export const getServerSideProps: GetServerSideProps = async ({
 }) => {
   //Pegando informações se o usuário está autenticado
   const session = await getSession({ req });
-
-  if (!session || !session.activeSubscription) {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
 
   //Pegando o parâmetro da rota
   const { slug } = params;
