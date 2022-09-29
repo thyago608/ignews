@@ -23,12 +23,13 @@ describe("Component SubscribeButton", () => {
   });
 
   it("should redirects user to sign in when not authenticated", () => {
-    const signInMocked = jest.mocked(signIn);
     const useSessionMocked = jest.mocked(useSession);
+    const signInMocked = jest.mocked(signIn);
 
     useSessionMocked.mockReturnValueOnce([null, false]);
 
     render(<SubscribeButton />);
+
     const subscribeButton = screen.getByText("Subscribe now");
 
     fireEvent.click(subscribeButton);
@@ -36,25 +37,25 @@ describe("Component SubscribeButton", () => {
     expect(signInMocked).toHaveBeenCalled();
   });
 
-  it("Redirects to posts when user already has a subscription", () => {
+  it("redirects to posts when user already has a subscription", () => {
     const useSessionMocked = jest.mocked(useSession);
     const useRouterMocked = jest.mocked(useRouter);
-    const pushMocked = jest.fn();
+    const pushMock = jest.fn();
 
     useSessionMocked.mockReturnValueOnce([
       {
         user: {
           name: "John Doe",
-          email: "johndoe@example.com",
+          email: "john.doe@example.com",
         },
-        activeSubscription: "fake-active-subscription",
+        activeSubscription: "fake-subscription",
         expires: "fake-expires",
       },
       false,
     ]);
 
     useRouterMocked.mockReturnValueOnce({
-      push: pushMocked,
+      push: pushMock,
     } as any);
 
     render(<SubscribeButton />);
@@ -63,6 +64,6 @@ describe("Component SubscribeButton", () => {
 
     fireEvent.click(subscribeButton);
 
-    expect(pushMocked).toHaveBeenLastCalledWith("/posts");
+    expect(pushMock).toHaveBeenCalled();
   });
 });
