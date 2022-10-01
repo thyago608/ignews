@@ -31,4 +31,27 @@ describe("Slug Page", () => {
     expect(postContent).toBeInTheDocument();
     expect(postContent).toHaveClass("notRegistered");
   });
+
+  it("renders correctly when authenticated", () => {
+    const useSessionMocked = jest.mocked(useSession);
+
+    useSessionMocked.mockReturnValueOnce([
+      {
+        user: {
+          name: "John Doe",
+          email: "johndoe@example.com",
+        },
+        activeSubscription: "fake-subscription",
+        expires: "fake-expires",
+      },
+      false,
+    ]);
+
+    render(<Post post={post} />);
+
+    const article = screen.getByRole("article");
+    const postClass = article.querySelector("div .postContent")?.className;
+
+    expect(postClass).toEqual("postContent ");
+  });
 });
