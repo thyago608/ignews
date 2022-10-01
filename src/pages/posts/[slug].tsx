@@ -25,17 +25,17 @@ export default function Post({ post }: PostProps) {
       </Head>
 
       <main className={styles.container}>
-        <article className={styles.post}>
+        <article className={styles.post} role={`article`}>
           <h1>{post.title}</h1>
           <time>{post.updatedAt}</time>
           <div
             className={`${styles.postContent} ${
-              !session ? styles.notRegistered : ""
+              !session?.activeSubscription ? styles.notRegistered : ""
             }`}
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
 
-          {!session?.activeSubscription && <SubscribeButton />}
+          {/* {!session?.activeSubscription && <SubscribeButton />} */}
         </article>
       </main>
     </>
@@ -46,9 +46,6 @@ export const getServerSideProps: GetServerSideProps = async ({
   req,
   params,
 }) => {
-  //Pegando informações se o usuário está autenticado
-  const session = await getSession({ req });
-
   //Pegando o parâmetro da rota
   const { slug } = params;
 
