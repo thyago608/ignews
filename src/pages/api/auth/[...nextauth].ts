@@ -1,19 +1,24 @@
 import NextAuth from "next-auth";
-import Providers from "next-auth/providers";
+import GitHubProvider from "next-auth/providers/github";
 import { query as q } from "faunadb";
 
 import { fauna } from "../../../services/fauna";
 
 export default NextAuth({
   providers: [
-    Providers.GitHub({
-      clientId: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
-      scope: "read:user",
+    GitHubProvider({
+      clientId: String(process.env.GITHUB_CLIENT_ID),
+      clientSecret: String(process.env.GITHUB_CLIENT_SECRET),
+      authorization: {
+        url: "https://github.com/login/oauth/authorize",
+        params: {
+          scope: "read:user",
+        },
+      },
     }),
   ],
   callbacks: {
-    async session(session) {
+    session: async ({ session, token, user }) => {
       try {
         const userActiveSubscription = await fauna.query(
           q.Get(
@@ -25,7 +30,7 @@ export default NextAuth({
                   q.Get(
                     q.Match(
                       q.Index("user_by_email"),
-                      q.Casefold(session.user.email)
+                      q.Casefold(String(session?.user?.email))
                     )
                   )
                 )
@@ -46,19 +51,21 @@ export default NextAuth({
         };
       }
     },
-    async signIn(user, account, profile) {
+    signIn: async ({ user, account, profile }) => {
       const { email } = user;
 
       try {
-        await fauna.query(
-          q.If(
-            q.Not(
-              q.Exists(q.Match(q.Index("user_by_email"), q.Casefold(email)))
-            ),
-            q.Create(q.Collection("users"), { data: { email } }),
-            q.Get(q.Match(q.Index("user_by_email"), q.Casefold(email)))
-          )
-        );
+        if (email) {
+          await fauna.query(
+            q.If(
+              q.Not(
+                q.Exists(q.Match(q.Index("user_by_email"), q.Casefold(email)))
+              ),
+              q.Create(q.Collection("users"), { data: { email } }),
+              q.Get(q.Match(q.Index("user_by_email"), q.Casefold(email)))
+            )
+          );
+        }
 
         return true;
       } catch (e) {

@@ -2,7 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { GetStaticProps } from "next";
 import styles from "./styles.module.scss";
-import Prismic from "@prismicio/client";
+import * as prismic from "@prismicio/client";
 import { RichText } from "prismic-dom";
 import { getPrismicClient } from "../../services/prismic";
 
@@ -11,6 +11,12 @@ type Post = {
   title: string;
   excerpt: string;
   updatedAt: string;
+};
+
+type ContentPrismicResponseType = {
+  type: string;
+  text: string;
+  span: [];
 };
 
 type PostProps = {
@@ -42,24 +48,20 @@ export default function Posts({ posts }: PostProps) {
 
 export const getStaticProps: GetStaticProps = async () => {
   //Criando um cliente Prismic
-  const prismic = getPrismicClient();
+  const prismicClient = getPrismicClient();
 
-  //Pegando todos os documentos do tipo post do Prismic
-  const response = await prismic.query(
-    [Prismic.predicates.at("document.type", "post")],
-    {
-      fetch: ["post.title", "post.content"],
-      pageSize: 100,
-    }
-  );
+  const response = await prismicClient.get({
+    predicates: prismic.predicate.at("document.type", "post"),
+  });
 
   const posts = response.results.map((post) => {
     return {
       slug: post.uid,
       title: RichText.asText(post.data.title),
       excerpt:
-        post.data.content.find((content) => content.type === "paragraph")
-          ?.text ?? "",
+        post.data.content.find(
+          (content: ContentPrismicResponseType) => content.type === "paragraph"
+        )?.text ?? "",
       updatedAt: new Date(post.last_publication_date).toLocaleDateString(
         "pt-BR",
         {

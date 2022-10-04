@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { GetServerSideProps } from "next";
-import { useSession } from "next-auth/client";
+import { useSession } from "next-auth/react";
 import { getPrismicClient } from "../../services/prismic";
 import { RichText } from "prismic-dom";
 import styles from "./post.module.scss";
@@ -16,7 +16,7 @@ type PostProps = {
 };
 
 export default function Post({ post }: PostProps) {
-  const [session] = useSession();
+  const { data } = useSession();
 
   return (
     <>
@@ -30,7 +30,7 @@ export default function Post({ post }: PostProps) {
           <time>{post.updatedAt}</time>
           <div
             className={`${styles.postContent} ${
-              !session?.activeSubscription ? styles.notRegistered : ""
+              !data?.activeSubscription ? styles.notRegistered : ""
             }`}
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
