@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { Readable } from "stream";
 import { stripe } from "../../services/stripe";
-import { saveSubscription } from "../api/_lib/managerSubscription";
 import Stripe from "stripe";
+import { saveSubscription } from "../api/_lib/managerSubscription";
 
 async function buffer(readable: Readable) {
   const chunks = [];
@@ -22,6 +22,7 @@ export const config = {
 
 const relevantEvents = new Set([
   "checkout.session.completed",
+  "payment_intent.succeeded",
   "customer.subscription.updated",
   "customer.subscription.deleted",
 ]);
@@ -32,7 +33,7 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
 
     //Busca na propriedade `stripe-signature` do cabeçalho da requisição
     //O id que o stripe envia quando acessa essa rota via webhook.
-    const secret = request.headers["stripe-signature"];
+    const secret = request.headers["stripe-signature"] as string;
 
     let event: Stripe.Event;
 
@@ -40,10 +41,10 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
       event = stripe.webhooks.constructEvent(
         buf,
         secret,
-        process.env.STRIPE_WEBHOOK_SECRET
+        String(process.env.STRIPE_WEBHOOK_SECRET)
       );
     } catch (error) {
-      return response.status(400).send(`Webhook error: ${error.message}`);
+      return response.status(400).send(`Webhook error: ${error}`);
     }
 
     const { type } = event;
@@ -63,12 +64,13 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
             break;
 
           case "checkout.session.completed":
+          case "payment_intent.succeeded":
             const checkoutSession = event.data
               .object as Stripe.Checkout.Session;
 
             await saveSubscription(
-              checkoutSession.subscription.toString(),
-              checkoutSession.customer.toString(),
+              String(checkoutSession.subscription),
+              String(checkoutSession.customer),
               true
             );
             break;

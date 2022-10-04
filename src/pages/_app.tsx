@@ -5,7 +5,7 @@ import "../styles/global.scss";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <SessionProvider session={pageProps.session}>
+    <SessionProvider session={(pageProps as any).session}>
       <Header />
       <Component {...pageProps} />
     </SessionProvider>

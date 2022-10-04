@@ -33,7 +33,7 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
 
       if (!customerId) {
         const stripeCustomer = await stripe.customers.create({
-          email: session?.user?.email ?? "Default",
+          email: session?.user?.email ?? "user@example.com",
         });
 
         await fauna.query(
@@ -45,6 +45,8 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
         customerId = stripeCustomer.id;
       }
     }
+
+    console.log(customerId);
 
     const checkoutSession = await stripe.checkout.sessions.create({
       customer: customerId,
