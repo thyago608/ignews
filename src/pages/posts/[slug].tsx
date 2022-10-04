@@ -4,7 +4,6 @@ import { useSession } from "next-auth/react";
 import { getPrismicClient } from "../../services/prismic";
 import { RichText } from "prismic-dom";
 import styles from "./post.module.scss";
-import { SubscribeButton } from "../../components/SubscribeButton";
 
 type PostProps = {
   post: {
@@ -34,8 +33,6 @@ export default function Post({ post }: PostProps) {
             }`}
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
-
-          {/* {!session?.activeSubscription && <SubscribeButton />} */}
         </article>
       </main>
     </>
@@ -47,15 +44,14 @@ export const getServerSideProps: GetServerSideProps = async ({
   params,
 }) => {
   //Pegando o parâmetro da rota
-  const { slug } = params;
 
   const prismic = getPrismicClient(req);
 
   //Pegando um documento no prismic por UID (tipo do doc no prismic, uid do doc, config do documento)
-  const response = await prismic.getByUID("post", String(slug), {});
+  const response = await prismic.getByUID("post", String(params?.slug), {});
 
   const post = {
-    slug,
+    slug: params?.slug,
     title: RichText.asText(response.data.title),
     content: RichText.asHtml(response.data.content),
     updatedAt: new Date(response.last_publication_date).toLocaleDateString(
