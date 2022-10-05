@@ -32,12 +32,16 @@
     font-weight: bold;
   }
 
+  h1,
+  p {
+    text-align: center;
+  }
+
   h1 {
     font-size: 4.5rem;
     line-height: 4.5rem;
     font-weight: 900;
     margin-top: 2.5rem;
-    text-align: center;
 
     span {
       color: var(--cyan-500);
@@ -62,7 +66,9 @@
   }
 
   @media (min-width: 1024px) {
-    h1 {
+    align-items: flex-start;
+    h1,
+    p {
       text-align: left;
     }
   }

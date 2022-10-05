@@ -14,7 +14,10 @@ type User = {
   };
 };
 
-export default async (request: NextApiRequest, response: NextApiResponse) => {
+const subscribe = async (
+  request: NextApiRequest,
+  response: NextApiResponse
+) => {
   if (request.method === "POST") {
     const session = await getSession({ req: request });
     let customerId = "";
@@ -63,3 +66,5 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
     response.status(405).end("Method not allowed");
   }
 };
+
+export default subscribe;
