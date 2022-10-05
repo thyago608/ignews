@@ -64,7 +64,6 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
             break;
 
           case "checkout.session.completed":
-          case "payment_intent.succeeded":
             const checkoutSession = event.data
               .object as Stripe.Checkout.Session;
 

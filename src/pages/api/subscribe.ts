@@ -17,7 +17,7 @@ type User = {
 export default async (request: NextApiRequest, response: NextApiResponse) => {
   if (request.method === "POST") {
     const session = await getSession({ req: request });
-    let customerId;
+    let customerId = "";
 
     if (session) {
       const user = await fauna.query<User>(
@@ -45,8 +45,6 @@ export default async (request: NextApiRequest, response: NextApiResponse) => {
         customerId = stripeCustomer.id;
       }
     }
-
-    console.log(customerId);
 
     const checkoutSession = await stripe.checkout.sessions.create({
       customer: customerId,
