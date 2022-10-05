@@ -38,6 +38,7 @@ export default function Home({ product }: HomeProps) {
           alt="girl coding"
           width={600}
           height={600}
+          title="girl coding"
         />
       </main>
     </>
