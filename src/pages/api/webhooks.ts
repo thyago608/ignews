@@ -22,7 +22,6 @@ export const config = {
 
 const relevantEvents = new Set([
   "checkout.session.completed",
-  "payment_intent.succeeded",
   "customer.subscription.updated",
   "customer.subscription.deleted",
 ]);

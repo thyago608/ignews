@@ -9,12 +9,10 @@ export default NextAuth({
       clientId: String(process.env.GITHUB_CLIENT_ID),
       clientSecret: String(process.env.GITHUB_CLIENT_SECRET),
       authorization: {
-        url: "https://github.com/login/oauth/authorize",
         params: {
           scope: "read:user",
         },
       },
-      token: "https://github.com/login/oauth/access_token",
     }),
   ],
   callbacks: {
