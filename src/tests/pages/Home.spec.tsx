@@ -9,8 +9,11 @@ jest.mock("next/router", () => ({
   }),
 }));
 
-jest.mock("next-auth/client", () => ({
-  useSession: () => [null, false],
+jest.mock("next-auth/react", () => ({
+  useSession: () => ({
+    data: null,
+    status: "unauthenticated",
+  }),
 }));
 
 jest.mock("../../services/stripe");

@@ -1,6 +1,6 @@
 import { screen, render } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { useSession } from "next-auth/client";
+import { useSession } from "next-auth/react";
 import { getPrismicClient } from "../../services/prismic";
 import Post, { getServerSideProps } from "../../pages/posts/[slug]";
 
@@ -11,7 +11,7 @@ const post = {
   updatedAt: "10 de Abril",
 };
 
-jest.mock("next-auth/client");
+jest.mock("next-auth/react");
 jest.mock("next/router", () => ({
   useRouter: jest.fn().mockReturnValue({
     push: jest.fn(),
@@ -23,7 +23,10 @@ describe("Slug Page", () => {
   it("renders correctly when not authenticated", () => {
     const useSessionMocked = jest.mocked(useSession);
 
-    useSessionMocked.mockReturnValueOnce([null, false]);
+    useSessionMocked.mockReturnValueOnce({
+      data: null,
+      status: "unauthenticated",
+    });
 
     render(<Post post={post} />);
 
@@ -37,8 +40,8 @@ describe("Slug Page", () => {
   it("renders correctly when authenticated", () => {
     const useSessionMocked = jest.mocked(useSession);
 
-    useSessionMocked.mockReturnValueOnce([
-      {
+    useSessionMocked.mockReturnValueOnce({
+      data: {
         user: {
           name: "John Doe",
           email: "johndoe@example.com",
@@ -46,8 +49,8 @@ describe("Slug Page", () => {
         activeSubscription: "fake-subscription",
         expires: "fake-expires",
       },
-      false,
-    ]);
+      status: "authenticated",
+    });
 
     render(<Post post={post} />);
 

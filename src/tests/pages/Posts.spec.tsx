@@ -25,7 +25,7 @@ describe("Posts Page", () => {
     const getPrismicClientMocked = jest.mocked(getPrismicClient);
 
     getPrismicClientMocked.mockReturnValueOnce({
-      query: jest.fn().mockResolvedValueOnce({
+      get: jest.fn().mockResolvedValueOnce({
         results: [
           {
             uid: "my-new-post",
