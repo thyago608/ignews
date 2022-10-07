@@ -56,6 +56,6 @@ A aplicação foi desenvolvida dentro da **Trilha Ignite da Rocketseat**.
 <br>
 
 ## Visite
-[ignews](https://ignews-rust-three.vercel.app/)
+[ignews](https://ignews-h66yvg5pz-thyago608.vercel.app/)
 
 Desenvolvido por Thyago Ribeiro 👋
