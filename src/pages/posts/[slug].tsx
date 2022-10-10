@@ -17,7 +17,7 @@ type PostProps = {
 export default function Post({ post }: PostProps) {
   const { data } = useSession();
 
-  const subscriptionActiveExists = data && !!data.activeSubscription;
+  const subscriptionActiveExists = data && !!data?.activeSubscription;
 
   return (
     <>
