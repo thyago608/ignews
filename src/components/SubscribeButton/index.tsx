@@ -14,7 +14,8 @@ export function SubscribeButton() {
       return;
     }
 
-    const subscriptionActiveExists = !!data?.activeSubscription;
+    const subscriptionActiveExists =
+      "activeSubscription" in data && !!data.activeSubscription;
 
     if (subscriptionActiveExists) {
       router.push("/posts");
