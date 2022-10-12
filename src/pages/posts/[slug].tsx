@@ -17,8 +17,6 @@ type PostProps = {
 export default function Post({ post }: PostProps) {
   const { data } = useSession();
 
-  const subscriptionActiveExists = data && !!data?.activeSubscription;
-
   return (
     <>
       <Head>
@@ -31,7 +29,7 @@ export default function Post({ post }: PostProps) {
           <time>{post.updatedAt}</time>
           <div
             className={`${styles.postContent} ${
-              !subscriptionActiveExists ? styles.notRegistered : ""
+              data?.activeSubscription ? "" : styles.notRegistered
             }`}
             dangerouslySetInnerHTML={{ __html: post.content }}
           />
