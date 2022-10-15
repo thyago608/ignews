@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { GetServerSideProps } from "next";
 import { useSession } from "next-auth/react";
-import { getPrismicClient } from "../../services/prismic";
+import { getPrismicClient } from "services/prismic";
 import { RichText } from "prismic-dom";
 import styles from "./post.module.scss";
 

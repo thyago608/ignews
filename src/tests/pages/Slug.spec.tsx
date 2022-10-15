@@ -46,7 +46,7 @@ describe("Slug Page", () => {
           name: "John Doe",
           email: "johndoe@example.com",
         },
-        activeSubscription: "fake-subscription",
+        activeSubscription: {},
         expires: "fake-expires",
       },
       status: "authenticated",

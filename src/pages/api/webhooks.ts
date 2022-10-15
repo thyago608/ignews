@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { Readable } from "stream";
-import { stripe } from "../../services/stripe";
+import { stripe } from "services/stripe";
 import Stripe from "stripe";
-import { saveSubscription } from "../api/_lib/managerSubscription";
+import { saveSubscription } from "pages/api/_lib/managerSubscription";
 
 async function buffer(readable: Readable) {
   const chunks = [];

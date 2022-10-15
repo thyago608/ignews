@@ -1,18 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getSession } from "next-auth/react";
 import { query as q } from "faunadb";
-import { fauna } from "../../services/fauna";
-import { stripe } from "../../services/stripe";
-
-type User = {
-  ref: {
-    id: string;
-  };
-  data: {
-    email: string;
-    stripe_customer_id: string;
-  };
-};
+import { fauna } from "services/fauna";
+import { stripe } from "services/stripe";
+import { User } from "types/User";
 
 const subscribe = async (
   request: NextApiRequest,

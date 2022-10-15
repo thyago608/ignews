@@ -28,6 +28,7 @@ describe("Component SignInButton", () => {
           name: "John Doe",
           email: "johndoe@example.com",
         },
+        activeSubscription: {},
         expires: "fake-expires",
       },
       status: "authenticated",
